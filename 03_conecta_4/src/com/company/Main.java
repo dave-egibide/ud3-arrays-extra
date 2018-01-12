@@ -56,12 +56,62 @@ public class Main {
     }
 
     private static boolean comprobarVictoria(char[][] cuenca, int columna, int turno) {
+
+        char ficha = (char) (turno(turno) ? 9679 : 9675);
+
+        int filas = cuenca.length;
+        int columnas = cuenca[0].length;
+
+        boolean hayGanador = false;
+
+        // Recorrer cada casilla, si no hay ya un ganador
+        for (int i = 0; i < filas && !hayGanador; i++) {
+            for (int j = 0; j < columnas && !hayGanador; j++) {
+
+                // Si encontramos una del jugador que acaba de tirar, contamos a ver si hay 4 en línea
+                if (cuenca[i][j] == ficha) {
+
+                    // Horizontalmente
+                    int cuentaH = 0;
+                    for (int k = j; k < columnas && cuenca[i][k] == ficha; k++)
+                        cuentaH += 1;
+
+                    // Verticalmente
+                    int cuentaV = 0;
+                    for (int k = i; k < filas && cuenca[k][j] == ficha; k++)
+                        cuentaV += 1;
+
+                    // En diagonal, bajando
+                    int cuentaD1 = 0;
+                    for (int k = i, l = j; k < filas && l < columnas && cuenca[k][l] == ficha; k++, l++)
+                        cuentaD1 += 1;
+
+                    // En diagonal, subiendo
+                    int cuentaD2 = 0;
+                    for (int k = i, l = j; k >= 0 && l < columnas && cuenca[k][l] == ficha; k--, l++)
+                        cuentaD2 += 1;
+
+                    hayGanador = cuentaH >= 4 || cuentaV >= 4 || cuentaD1 >= 4 || cuentaD2 >= 4;
+
+                    if (hayGanador) {
+                        System.out.println("Ha ganado " + ficha);
+                    }
+                }
+            }
+        }
+
+        return hayGanador;
+    }
+
+/*
+    private static boolean comprobarVictoria(char[][] cuenca, int columna, int turno) {
         char ficha;
         if (turno(turno)) ficha = 9679;
         else ficha = 9675;
         int fila = sueloColumna(cuenca, columna) + 1;
         return comprobarVictoria(cuenca, columna, fila, ficha);
     }
+*/
 
     private static boolean comprobarVictoria(char[][] cuenca, int columna, int fila, char ficha) {
         return (comprobarAdjuntas(cuenca, columna, fila, ficha, 1, 0) ||
